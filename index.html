@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Shifts</title>
+    <style>
+        /* Add your CSS styles here */
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 10px;
+        }
+        .employee-card {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .employee-card img {
+            width: 100px; /* Set a uniform width for employee images */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Shifts</h1>
+
+    <div id="shift-details" class="tab">
+        <!-- Display shift details here -->
+        <div class="column" id="morning-shift">
+            <h2>Morning Shift</h2>
+            <div id="morning-schedule"></div>
+        </div>
+        <div class="column" id="evening-shift">
+            <h2>Evening Shift</h2>
+            <div id="evening-schedule"></div>
+        </div>
+        <div class="column" id="night-shift">
+            <h2>Night Shift</h2>
+            <div id="night-schedule"></div>
+        </div>
+    </div>
+
+    <script>
+        // Define employee data
+        const employees = [
+            { name: "Akshay", shift: "Morning", weekend: ["Saturday", "Sunday"], onLeave: false, image: "images/akshay.jpeg" },
+            { name: "SRK", shift: "Evening", weekend: ["Saturday", "Sunday"], onLeave: false, image: "images/srk.jpg" },
+            { name: "Allu", shift: "Night", weekend: ["Saturday", "Sunday"], onLeave: false, image: "images/allu.jpg" },
+            { name: "NTR", shift: "Morning", weekend: ["Monday", "Tuesday"], onLeave: false, image: "images/ntr.jpg" },
+            { name: "Ram", shift: "Evening", weekend: ["Monday", "Tuesday"], onLeave: false, image: "images/ram.jpg" },
+            { name: "Prabhas", shift: "Night", weekend: ["Monday", "Tuesday"], onLeave: false, image: "images/prabhas.jpg" },
+        ];
+
+        // Function to display employee schedule based on the current day and time
+        function displayEmployeeSchedule() {
+            const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            const currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            const morningSchedule = document.getElementById("morning-schedule");
+            const eveningSchedule = document.getElementById("evening-schedule");
+            const nightSchedule = document.getElementById("night-schedule");
+
+            // Clear existing content
+            morningSchedule.innerHTML = "";
+            eveningSchedule.innerHTML = "";
+            nightSchedule.innerHTML = "";
+
+            // Determine the current shift based on the current time
+            let currentShift;
+            const hour = new Date().getHours();
+            if (hour >= 5 && hour < 13) {
+                currentShift = "Morning";
+            } else if (hour >= 13 && hour < 21) {
+                currentShift = "Evening";
+            } else {
+                currentShift = "Night";
+            }
+
+            // Filter employees by shift and current day
+            employees.forEach((employee) => {
+                if (employee.shift === currentShift && !employee.onLeave && employee.weekend.indexOf(currentDay) === -1) {
+                    const shiftSchedule = document.getElementById(`${employee.shift.toLowerCase()}-schedule`);
+                    const employeeCard = document.createElement("div");
+                    employeeCard.classList.add("employee-card");
+
+                    const employeeName = document.createElement("h3");
+                    employeeName.textContent = employee.name;
+
+                    const employeeImage = document.createElement("img");
+                    employeeImage.src = employee.image || "images/default.jpg";
+                    employeeImage.alt = `Employee ${employee.name} - ${employee.shift}`;
+
+                    const weekendDays = document.createElement("p");
+                    weekendDays.textContent = "Weekend Days: " + employee.weekend.join(", ");
+
+                    employeeCard.appendChild(employeeName);
+                    employeeCard.appendChild(employeeImage);
+                    employeeCard.appendChild(weekendDays);
+
+                    shiftSchedule.appendChild(employeeCard);
+                }
+            });
+        }
+
+        // Call the function to display the employee schedule
+        displayEmployeeSchedule();
+    </script>
+</body>
+</html>
